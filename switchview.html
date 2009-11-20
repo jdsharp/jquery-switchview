@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>Switch View Example</title>
+	<style type="text/css">
+	.view-hidden {
+		display: none;
+	}
+	body {
+		font-family: sans-serif;
+		margin: 1em;
+		line-height: 1.3em;
+	}
+	label {
+		display: block;
+	}
+	</style>
+</head>
+<body>
+
+<div style="border: 1px solid #505050; padding: 1em; width: 300px;">
+	<p>
+	<label>Username</label>
+	<input type="text" name="username" />
+	</p>
+	
+	<p>
+	<label>Password</label>
+	<input type="password" name="password" />
+	</p>
+	
+	<p class="view-on-change-pw view-hidden">
+	<label>Confirm Password</label>
+	<input type="text" name="confirmPassword" />
+	</p>
+	
+	<p class="view-on-login">
+	<a href="#" id="changepw">Change my password (click me to switchView)</a>
+	</p>
+	
+	<p>
+	<input type="button" name="login" value="Log In" class="view-on-login" />
+	<input type="button" id="cancel" value="Cancel" class="view-on-change-pw view-hidden" />
+	<input type="button" name="changePassword" value="Change Password" class="view-on-change-pw view-hidden" />
+	</p>
+</div>
+
+<div class="view-group-jslib" style="border: 1px solid #505050; padding: 1em; width: 300px;">
+	View Group Example
+	<hr />
+	Select a JavaScript library
+	<label><input type="radio" name="jslib" value="jquery" /> jQuery</label>
+	<label><input type="radio" name="jslib" value="dojo" /> Dojo</label>
+	<label><input type="radio" name="jslib" value="extjs" /> Ext JS</label>
+	
+	<p class="view-on-jquery view-hidden">
+		Text for jQuery
+	</p>
+	
+	<p class="view-on-dojo view-hidden">
+		Text for dojo
+	</p>
+	
+	<p class="view-on-extjs view-hidden">
+		Text for ExtJS
+	</p>
+</div>
+
+<h2>Documentation</h2>
+
+<h3>Overview</h3>
+<p>switchView is a jQuery plugin authored by <a href="http://jdsharp.com">Jonathan Sharp</a> and may be downloaded 
+	from <a href="http://jdsharp.com/jquery-plugins/switchview/">http://jdsharp.com/jquery-plugins/switchview/</a>
+</p>
+<p>The switchView plugin allows for easily toggling groups of elements on and off. A common pattern in 
+	development is to have a number of elements that need to be shown/hidden at the same time. Often these 
+	elements exist in separate elements resulting in long selectors and operations like the following:<br/>
+	<code>
+		$('input[name=confirmPassword],#changepw,input[name=changePassword]').closest('p').show();<br/>
+		$('input[name=login],#changepw').closest('p').hide();<br/>
+	</code>
+</p>
+<p>The switchView plugin follows a convention for naming CSS classes allowing you to "tag" and "group" elements 
+	that should be shown/hidden. For example, if you defined three sets of elements such as: login, changePw, 
+	and createAccount you would end up with the following CSS classes: view-on-login, view-on-change-pw, 
+	view-on-create-account. Simply add these classes to their respective elements or parents. For elements that 
+	should be hidden by default on page load add a view-hidden class.
+</p>
+
+<p>Now that you have elements tagged, to 
+	switch between the 'login' state and 'createAccount' state do: 
+	<code>$('body').switchView('createAccount');</code> which will find all elements who have classes that 
+	start with <code>view-on-*</code> and hide them. Then it finds all classes <code>view-on-create-account</code>
+	and makes them visible. It is possible to have an element belong to two views (for example 
+	<code>class="view-on-login view-on-change-pw"</code>).
+</p>
+
+<h3>Defining Views</h3>
+<p>Tag html elements with CSS classes <code>view-on-VIEWNAME</code> to tag elements to be toggled. 
+	<code>VIEWNAME</code> should follow the format of lowercase-dashed and prefixed with 
+	<code>view-on-</code> (this can be configured). An example of a class would be 
+	<code>view-on-login</code> or <code>view-on-change-pw</code>. Place these classes on the respective 
+	elements. Elements that should be hidden by default should additionally have the class 
+	<code>view-hidden</code> added (also configurable).
+</p>
+
+<h3>Defining View Groups</h3>
+<p>	switchView also provides the concepts of "groups" under which are views. This allows for sub-grouping 
+	of views. A <code>view-group-NAME</code> class can be placed on a <code>view-on-*</code> element or 
+	one of it's parents. To switch a view 'create' within a group called 'newAccount' you would call the following: 
+	<code>$('body').switchView('newAccount.create');</code> which would search for CSS class 'view-on-create' 
+	that is either attached to a child of/or an element that has 'view-group-new-account'.
+</p>
+
+<h3>switchView API Methods</h3>
+<p>
+	<code>
+	$('body').switchView('viewName');<br/>
+	</code><br/>
+	Call .switchView() on a jQuery object passing in the view name. The format 
+	of the view name is 'viewName' in camel case. When placing CSS classes on elements
+	translate the 'viewName' to 'view-on-view-name' (all lowercase dashed).
+</p>
+<p>	You can restrict the scope in which switchView will search for elements by changing the selector 
+	on which you call it. So to restrict switchView to search for <code>view-on-*</code> classes on just a form, do:
+	<code>$('form').switchView('yourView');</code>
+</p>
+
+<h3>switchView Global Settings</h3>
+<p>
+	<code>
+	$.switchView.hidden = 'view-hidden';
+	</code><br/>
+	<code>$.switchView.hidden</code> is the class used to toggle elements visible or hidden. It should have the 
+	css rule: <code>display: none;</code>.
+</p>
+
+<p><code>$.switchView.prefix = 'view-on-';</code><br/>
+	<code>$.switchView.prefix</code> is the value prefixed for all "view" classes. For example by default a 
+	class would be called <code>view-on-login</code>. Changing <code>$.switchView.prefix = 'vo-';</code> 
+	would then change the previous class to <code>vo-login</code>.
+</p>
+
+<p><code>$.switchView.group  = 'view-group-';</code><br/>
+	<code>$.switchView.group</code> is the value prefixed for all "group" classes. For example by default a 
+	class would be called <code>view-group-login-form</code>. Changing <code>$.switchView.group = 'vg-';</code> 
+	would then change the previous class to <code>vg-login-form</code>.
+</p>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script src="jquery.switchview.js"></script>
+<script type="text/javascript">
+	$(function() {
+		$('#changepw').click(function() {
+			$('body').switchView('changePw');
+		});
+		$('#cancel').click(function() {
+			$('body').switchView('login');
+		});
+		
+		$('[name=jslib]').change(function() {
+			$('body').switchView( 'jslib.' + $(this).val() );
+		});
+	});
+</script>
+</body>
+</html>
